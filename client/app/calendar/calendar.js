@@ -6,6 +6,13 @@ angular.module('calendarConceptApp')
       .state('calendar', {
         url: '/calendar',
         templateUrl: 'app/calendar/calendar.html',
-        controller: 'CalendarCtrl'
+        controller: 'CalendarCtrl',
+        resolve: {
+          events: function($http, EventData) {
+            return EventData.getEvents().then(function(res){
+              return res.data;
+            })
+          }
+        }
       });
   });
