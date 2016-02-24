@@ -1,0 +1,2 @@
+# ng-calendar
+Calendar prototype
