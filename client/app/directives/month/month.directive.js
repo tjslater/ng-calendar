@@ -10,9 +10,9 @@ angular.module('calendarConceptApp')
 
 
 
-        scope.events = EventData.getParsedEvents(2012, 3);
+        scope.events = EventData.getParsedEvents(2012, 2);
 
-        scope.month = DateManager.getDaysInMonth(2012, 3);
+        scope.month = DateManager.getDaysInMonth(2012, 2);
       }
     };
   });
