@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('calendarConceptApp')
-  .service('EventData', function ($http) {
+  .service('EventData', function ($http, DateManager) {
     // AngularJS will instantiate a singleton by calling "new" on this function
     var parsedEvents = {};
     /**
@@ -47,30 +47,22 @@ angular.module('calendarConceptApp')
       events.forEach(this.addEvent, this);
       t.stop();
     };
+
     /**
      *
-     * @param {number|string} year
-     * @param {number|string} month
-     * @returns {{Object []}}
+     * @param dates
+     * @returns {{}}
      */
-    this.getParsedEvents = function (year, month) {
-      var date, eventMonth, eventYear;
+    this.getParsedEvents = function () {
+      var dates = DateManager.daysInView();
       var monthEvents = {};
-      if(!month) {
-        /**
-         *
-         */
+      if(!dates) {
         return parsedEvents;
       }
-      for (var dateKey in parsedEvents) {
-        date = new Date(dateKey);
-        eventMonth = date.getMonth();
-        eventYear = date.getFullYear();
+      dates.forEach(function(date) {
+        monthEvents[date] = parsedEvents[date]
+      });
 
-        if(eventMonth === month && eventYear === year) {
-          monthEvents[dateKey] = parsedEvents[dateKey];
-        }
-      }
       return monthEvents;
 
 
@@ -82,7 +74,6 @@ angular.module('calendarConceptApp')
      * If the startDate is equal to an endDate, add it by key
      * If it's a multiday, iterate from its start date to its end date, adding it to each day in between
      * @param event
-     * @param {number} idx
      */
     this.addEvent = function (event) {
       if(!event) return;

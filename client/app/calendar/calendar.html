@@ -1,3 +1,12 @@
-<div class="container">
-  <div month></div>
+<div class="well-sm">
+  <input type="number" ng-model="currentMonth" ng-change="setDate()" min="0" max="11">
 </div>
+<div class="well-sm">
+  <input type="number" ng-model="currentYear" ng-change="setDate()" min="2000" max="2050">
+</div>
+
+<ol>
+  <li ng-repeat="date in daysInView">
+    <div day date="date" evts="currentEvents[date]"></div>
+  </li>
+</ol>

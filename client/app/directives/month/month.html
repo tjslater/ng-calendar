@@ -1,3 +1,6 @@
-<div>this is the month directive</div>
-{{month}}
-{{events}}
+<ul class="list-unstyled">
+  <li ng-repeat="date in month" class="well">
+    <h4>{{date}}</h4>
+    <ol day evts="events[date]" date="date" class="well-lg" ng-show="events[date].length"></ol>
+  </li>
+</ul>

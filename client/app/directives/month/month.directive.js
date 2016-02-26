@@ -1,18 +1,17 @@
 'use strict';
 
 angular.module('calendarConceptApp')
-  .directive('month', function (EventData, DateManager) {
+  .directive('month', function () {
     return {
       templateUrl: 'app/directives/month/month.html',
-      scope: {},
+      scope: {
+        currentMonth: "="
+      },
       restrict: 'EA',
       link: function (scope, element, attrs) {
 
 
-
-        scope.events = EventData.getParsedEvents(2012, 2);
-
-        scope.month = DateManager.getDaysInMonth(2012, 2);
+        console.log(scope.currentMonth)
       }
     };
   });
