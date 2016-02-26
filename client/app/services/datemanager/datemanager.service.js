@@ -21,7 +21,7 @@ angular.module('calendarConceptApp')
      * Switch for month view and agenda view
      * @type {boolean}
      */
-    var isCalendarView = true;
+    var displayType = true;
     /**
      * defaults to current month
      * @type {number}
@@ -110,8 +110,6 @@ angular.module('calendarConceptApp')
     /**
      * Publicly accessible daysInView which both gets and sets, depending on arguments
      * @public
-     * @param {number=} year
-     * @param {number=} month
      * @returns {Array}
      */
     this.daysInView = function () {
@@ -125,6 +123,16 @@ angular.module('calendarConceptApp')
 
     this.setDay = function () {
 
+    }
+    /**
+     * Toggle between month and agenda views
+     * offers option to override toggle
+     * @param {boolean=} bool
+     * @returns {boolean}
+     */
+    this.toggleDisplayType = function(bool){
+      if (typeof bool === 'boolean') return displayType = bool;
+      return displayType = !displayType
     }
 
   });

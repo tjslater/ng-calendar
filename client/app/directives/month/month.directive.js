@@ -3,15 +3,16 @@
 angular.module('calendarConceptApp')
   .directive('month', function () {
     return {
-      templateUrl: 'app/directives/month/month.html',
       scope: {
-        currentMonth: "="
+        days: "=",
+        evts: "="
       },
+      templateUrl: 'app/directives/month/month.html',
       restrict: 'EA',
       link: function (scope, element, attrs) {
+        console.log(scope.days);
+        console.log(scope.evts);
 
-
-        console.log(scope.currentMonth)
       }
     };
   });

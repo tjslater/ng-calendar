@@ -1,1 +1,6 @@
-<div>this is the agenda directive</div>
+<h2>weekly agenda</h2>
+<ul>
+  <li ng-repeat="date in days">
+    <div day date="date" evts="evts[date]"></div>
+  </li>
+</ul>

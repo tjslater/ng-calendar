@@ -9,7 +9,7 @@ angular.module('calendarConceptApp')
       templateUrl: 'app/directives/event/event.html',
       restrict: 'EA',
       link: function (scope, element, attrs) {
-        
+
       }
     };
   });
