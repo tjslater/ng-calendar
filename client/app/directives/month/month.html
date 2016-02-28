@@ -1,6 +1,13 @@
 <h1>month</h1>
 <ol>
-  <li ng-repeat="date in days">
+
+<table class="calendar-table">
+<th>Month View</th>
+<tr ng-repeat="week in weeks">
+	<td ng-repeat="date in week">
     <div day date="date" evts="evts[date]"></div>
-  </li>
-</ol>
+  </td>
+</tr>
+</table>
+
+
