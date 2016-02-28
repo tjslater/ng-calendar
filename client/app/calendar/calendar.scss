@@ -1,6 +1,11 @@
 .calendar-table {
+  max-width: 1024px;
+  width: 100%;
+
   td {
     border: 1px solid black;
+    height: 200px;
+    vertical-align: top;
     width: 14.285714285714286%;
 
     .event {

@@ -78,7 +78,7 @@ angular.module('calendarConceptApp')
     this.addEvent = function (event) {
       if(!event) return;
       var dateArray = event.startDate.split('-');
-      var startDate = new Date(dateArray[0], dateArray[1], dateArray[2]);
+      var startDate = new Date(dateArray[0], dateArray[1]-1, dateArray[2]);
       if(!parsedEvents[startDate]) {
         parsedEvents[startDate] = [];
       }
@@ -100,7 +100,7 @@ angular.module('calendarConceptApp')
        * By splitting the string into an array, avoids locale time issue
        * @type {Date}
        */
-      var endDate = new Date(dateArray[0], dateArray[1], dateArray[2]);
+      var endDate = new Date(dateArray[0], dateArray[1]-1, dateArray[2]);
       var startIdx = null;
       var eventLength = null;
 
