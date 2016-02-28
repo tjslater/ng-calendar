@@ -24,6 +24,7 @@ angular.module('calendarConceptApp')
 
     $scope.setDisplayType = function(){
       DateManager.setDisplayType($scope.displayType);
+      $scope.setDate();
     };
 
   });
