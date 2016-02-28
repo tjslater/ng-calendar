@@ -21,12 +21,13 @@ angular.module('calendarConceptApp')
      * Switch for month view and agenda view
      * @type {boolean}
      */
-    var displayType = true;
+    var displayType = 'month';
     /**
      * defaults to current month
      * @type {number}
      */
     var currentMonth = new Date().getMonth();
+
     /**
      * Defaults to current year
      * @type {number}
@@ -34,9 +35,39 @@ angular.module('calendarConceptApp')
     var currentYear = new Date().getFullYear();
 
     /**
+     * Defaults to current year
+     * @type {number}
+     */
+    var currentWeek = 0;
+
+    /**
      *
      */
-    var daysInView = getDaysInView(currentYear, currentMonth);
+    var daysInMonthView = getDaysInMonthView(currentYear, currentMonth);
+
+    /**
+     *
+     */
+    var daysInView = daysInMonthView;
+
+
+    var weeksInMonth = getWeeksInMonthView();
+
+
+    function getWeeksInMonthView() {
+      return Math.floor(daysInMonthView.length / 7);
+    }
+
+    function getDaysInView() {
+      if (currentWeek < 0) {
+        currentWeek = 0;
+        return daysInMonthView;
+      }
+      var startDate = currentWeek * 7;
+      var endDate = startDate + 7;
+      return daysInMonthView.slice(startDate, endDate);
+    }
+
 
     /**
      * gets month, then gets viewable days to to make complete rectangle
@@ -45,7 +76,7 @@ angular.module('calendarConceptApp')
      * @param {number} month
      * @returns {Array}
      */
-    function getDaysInView(year, month) {
+    function getDaysInMonthView(year, month) {
       var date = new Date(year, month, 1);
       var monthStart = angular.copy(date);
       var monthStartDay, monthEnd;
@@ -62,7 +93,7 @@ angular.module('calendarConceptApp')
       }
       monthEnd = angular.copy(days[days.length - 1]);
       while ((monthEnd.getDay() + 1) < WEEK_ENDS) {
-        console.log(monthEnd.getDay(), WEEK_ENDS);
+        // console.log(monthEnd.getDay(), WEEK_ENDS);
         monthEnd.setDate(monthEnd.getDate() + 1);
         days.push(angular.copy(monthEnd));
 
@@ -82,7 +113,7 @@ angular.module('calendarConceptApp')
 
     };
 
-    this.getDateRange = function (startDate, endDate) {
+    this.getDateRange = function () {
 
     };
 
@@ -102,9 +133,18 @@ angular.module('calendarConceptApp')
       currentYear = year;
     };
 
-    this.setDate = function(year, month){
-      currentYear = year;
-      currentMonth = month;
+    this.setWeek = function (week) {
+      currentWeek = week;
+    };
+
+    this.getWeek = function() {
+      return currentWeek;
+    };
+
+    this.setDate = function(year, month, week){
+      this.setYear(year);
+      this.setMonth(month);
+      this.setWeek(week);
     };
 
     /**
@@ -113,13 +153,17 @@ angular.module('calendarConceptApp')
      * @returns {Array}
      */
     this.daysInView = function () {
-      return daysInView = getDaysInView(currentYear, currentMonth);
+      return daysInView = getDaysInView(currentWeek);
     };
 
-
-    this.setWeek = function () {
-
+    this.daysInMonthView = function () {
+      return daysInMonthView = getDaysInMonthView(currentYear, currentMonth);
     };
+
+    this.weeksInMonth = function () {
+      return weeksInMonth = getWeeksInMonthView();
+    };
+
 
     this.setDay = function () {
 
@@ -130,9 +174,12 @@ angular.module('calendarConceptApp')
      * @param {boolean=} bool
      * @returns {boolean}
      */
-    this.toggleDisplayType = function(bool){
-      if (typeof bool === 'boolean') return displayType = bool;
-      return displayType = !displayType
+    this.setDisplayType = function(type) {
+      displayType = type;
+    };
+
+    this.getDisplayType = function() {
+      return displayType;
     }
 
   });
