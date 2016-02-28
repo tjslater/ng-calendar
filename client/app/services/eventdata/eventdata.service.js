@@ -62,7 +62,7 @@ angular.module('calendarConceptApp')
       dates.forEach(function(date) {
         monthEvents[date] = parsedEvents[date]
       });
-
+      // console.log('month events', monthEvents);
       return monthEvents;
 
 

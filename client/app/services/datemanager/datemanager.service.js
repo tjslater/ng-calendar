@@ -59,8 +59,7 @@ angular.module('calendarConceptApp')
     }
 
     function getDaysInView() {
-      if (currentWeek < 0) {
-        currentWeek = 0;
+      if (displayType === 'month') {
         return daysInMonthView;
       }
       var startDate = currentWeek * 7;
@@ -94,9 +93,8 @@ angular.module('calendarConceptApp')
       monthEnd = angular.copy(days[days.length - 1]);
       // Make an even week with days from next month
       while ((days.length ) % 7 !== 0) {
-        console.log(monthEnd.getDay(), WEEK_ENDS);
+        // console.log(monthEnd.getDay(), WEEK_ENDS);
         monthEnd.setDate(monthEnd.getDate() + 1);
-        console.log('monthEnd', monthEnd);
         days.push(angular.copy(monthEnd));
       }
       // The while loop doesn't get the last day. Add it here.
