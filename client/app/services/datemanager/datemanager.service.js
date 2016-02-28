@@ -92,15 +92,16 @@ angular.module('calendarConceptApp')
         days.unshift(angular.copy(monthStart));
       }
       monthEnd = angular.copy(days[days.length - 1]);
-      while ((monthEnd.getDay() + 1) < WEEK_ENDS) {
+      // Make an even week with days from next month
+      while ((days.length ) % 7 !== 0) {
         console.log(monthEnd.getDay(), WEEK_ENDS);
         monthEnd.setDate(monthEnd.getDate() + 1);
         console.log('monthEnd', monthEnd);
         days.push(angular.copy(monthEnd));
       }
       // The while loop doesn't get the last day. Add it here.
-      monthEnd.setDate(monthEnd.getDate() + 1);
-      days.push(angular.copy(monthEnd));
+      // monthEnd.setDate(monthEnd.getDate() + 1);
+      // days.push(angular.copy(monthEnd));
       return days;
     }
 
