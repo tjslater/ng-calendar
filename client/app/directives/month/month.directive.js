@@ -16,11 +16,12 @@ angular.module('calendarConceptApp')
 
         function weekifyDays() {
           var chunkSize = 7;
-          scope.weeks = scope.days.map( function(e,i){
+          scope.weeks = scope.days.map( function(e, i) {
             return i % chunkSize === 0 ?
                 scope.days.slice(i, i + chunkSize) : null;
           })
           .filter(function(e){ return e; });
+          // console.log(scope.days.length, scope.weeks);
         }
 
         scope.$watch('days', function() {

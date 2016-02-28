@@ -93,12 +93,14 @@ angular.module('calendarConceptApp')
       }
       monthEnd = angular.copy(days[days.length - 1]);
       while ((monthEnd.getDay() + 1) < WEEK_ENDS) {
-        // console.log(monthEnd.getDay(), WEEK_ENDS);
+        console.log(monthEnd.getDay(), WEEK_ENDS);
         monthEnd.setDate(monthEnd.getDate() + 1);
+        console.log('monthEnd', monthEnd);
         days.push(angular.copy(monthEnd));
-
       }
-
+      // The while loop doesn't get the last day. Add it here.
+      monthEnd.setDate(monthEnd.getDate() + 1);
+      days.push(angular.copy(monthEnd));
       return days;
     }
 
