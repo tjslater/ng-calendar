@@ -1,130 +1,134 @@
-'use strict';
-
-angular.module('calendarConceptApp')
-  .service('EventData', function ($http, DateManager) {
-    // AngularJS will instantiate a singleton by calling "new" on this function
-    var parsedEvents = {};
-    /**
-     * to get a length of an event, you turn the start and end days into milliseconds,
-     * subtract the startdate from the enddate,
-     * then divide by DAY_IN_MILLISECONDS to get the event length
-     * @const {number}
-     */
-    var DAY_IN_MILLISECONDS = 86400000;
-
-    /**
-     * Utility function primarily for benchmarking event parser
-     * @param name
-     * @returns {{stop: EventData.stop}}
-     */
-    var timer = function (name) {
-      var start = new Date();
-      return {
-        stop: function () {
-          var end = new Date();
-          var time = end.getTime() - start.getTime();
-          console.log('Timer:', name, 'finished in', time, 'ms');
-        }
-      }
-    };
+goog.provide('glue.ng.calendar.eventService');
 
 
-    /**
-     * Resolves on /calendar route in calendar.js
-     * Returns events object to Calendar controller
-     * @returns {HttpPromise}
-     */
-    this.getEvents = function () {
-      return $http.get('/api/events')
-    };
 
-    /**
-     *
-     * @param events
-     */
-    this.parseEvents = function (events) {
-      var t = timer('event parser');
-      events.forEach(this.addEvent, this);
-      t.stop();
-    };
+/** @const {string} */
+glue.ng.calendar.eventService.SERVICE_NAME = 'glueCalendarEventService';
 
-    /**
-     *
-     * @param dates
-     * @returns {{}}
-     */
-    this.getParsedEvents = function () {
-      var dates = DateManager.daysInView();
-      var monthEvents = {};
-      if(!dates) {
-        return parsedEvents;
-      }
-      dates.forEach(function(date) {
-        monthEvents[date] = parsedEvents[date]
-      });
-      // console.log('month events', monthEvents);
-      return monthEvents;
+/**
+ * to get a length of an event, you turn the start and end days into milliseconds,
+ * subtract the startdate from the enddate,
+ * then divide by DAY_IN_MILLISECONDS to get the event length
+ * @const {number}
+ */
+glue.ng.calendar.eventService.DAY_IN_MILLISECONDS = 86400000;
+
+/** @type {!angular.Module} */
+glue.ng.calendar.eventService.module = angular.module(
+  glue.ng.calendar.eventService.SERVICE_NAME, []);
+
+/**
+ * @param {!angular.$http} $http
+ * @struct @final @ngInject @constructor
+ */
+glue.ng.calendar.eventService = function ($http) {
+  console.log('event service is here');
+  /**
+   *
+   * @type {!angular.$http}
+   * @private
+   */
+  this.ngHttp_ = $http;
+  /**
+   *
+   * @type {{}}
+   */
+  this.parsedEvents = {};
+};
+
+glue.ng.calendar.eventService.timer = function (name) {
+  var start = new Date();
+  return {
+    stop: function () {
+      var end = new Date();
+      var time = end.getTime() - start.getTime();
+      console.log('Timer:', name, 'finished in', time, 'ms');
+    }
+  }
+};
 
 
-    };
+/**
+ *
+ * @param events
+ */
+glue.ng.calendar.eventService.prototype.parseEvents = function (events) {
+  var t = timer('event parser');
+  events.forEach(this.addEvent, this);
+  t.stop();
+};
 
-    /**
-     * Adds an event to the master event object
-     * Each key in the object is a key to an array of events for that date.
-     * If the startDate is equal to an endDate, add it by key
-     * If it's a multiday, iterate from its start date to its end date, adding it to each day in between
-     * @param event
-     */
-    this.addEvent = function (event) {
-      if(!event) return;
-      var dateArray = event.startDate.split('-');
-      var startDate = new Date(dateArray[0], dateArray[1]-1, dateArray[2]);
-      if(!parsedEvents[startDate]) {
-        parsedEvents[startDate] = [];
-      }
-      if(event.startDate === event.endDate) {
-        parsedEvents[startDate].push(event);
-      } else {
-        this.parseMultiDayEvent(event, startDate, true);
-      }
-    };
-    /**
-     * Multiday parser
-     * @param event
-     * @param startDate
-     * @param isFirstDay
-     */
-    this.parseMultiDayEvent = function (event, startDate, isFirstDay) {
-      var dateArray = event.endDate.split('-');
-      /**
-       * By splitting the string into an array, avoids locale time issue
-       * @type {Date}
-       */
-      var endDate = new Date(dateArray[0], dateArray[1]-1, dateArray[2]);
-      var startIdx = null;
-      var eventLength = null;
+/**
+ *
+ * @returns {!angular.$http.HttpPromise}
+ */
+glue.ng.calendar.eventService.prototype.getEvents = function () {
+  return this.ngHttp_.get('events.json');
+};
 
-      while (startDate <= endDate) {
-        if(!parsedEvents[startDate]) parsedEvents[startDate] = [];
-        if(isFirstDay === false) event.startIdx = startIdx;
-        parsedEvents[startDate].push(event);
-        if(isFirstDay) {
 
-          //For multiday events, keep track of index value of firstDay
-          //May or may not be useful later on
-          startIdx = parsedEvents[startDate].indexOf(event);
-          /**
-           * For creating the multiday element in the view
-           * @type {number}
-           */
-          eventLength = Math.round(((endDate.getTime() - startDate.getTime()) / DAY_IN_MILLISECONDS)) + 1;
-          parsedEvents[startDate][startIdx].eventLength = eventLength;
-          parsedEvents[startDate][startIdx].startIdx = startIdx;
-          isFirstDay = false;
-        }
-        startDate.setDate(startDate.getDate() + 1)
-      }
+/**
+ *
+ * @param {object} event
+ * @param {Date} startDate
+ * @param {boolean} isFirstDay
+ */
+glue.ng.calendar.eventService.prototype.parseMultiDayEvent = function (event, startDate, isFirstDay) {
+  /** @type {Array} */
+  var dateArray = event.endDate.split('-');
+  /** @type {Date} */
+  var endDate = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
+  /** @type {null|number} */
+  var startIdx = null;
+  /** @type {null|number} */
+  var eventLength = null;
+
+  while (startDate <= endDate) {
+    if(!this.parsedEvents[startDate]) {
+      this.parsedEvents[startDate] = []
+    }
+    if(isFirstDay === false) {
+      event.startIdx = startIdx
     }
 
+    this.parsedEvents[startDate].push(event);
 
-  });
+    if(isFirstDay) {
+      /**
+       * Gets the event length for visualization purposes
+       * @type {number}
+       */
+      eventLength = Math.round(((endDate.getTime() - startDate.getTime()) / glue.ng.calendar.eventService.DAY_IN_MILLISECONDS)) + 1;
+      this.parsedEvents[startDate][startIdx].eventLength = eventLength;
+      this.parsedEvents[startDate][startIdx].startIdx = startIdx;
+      isFirstDay = false;
+    }
+    startDate.setDate(startDate.getDate() + 1)
+  }
+};
+
+/**
+ *
+ * @param {{startDate: string, endDate: string}} event
+ */
+glue.ng.calendar.eventService.prototype.addEvent = function (event) {
+  if(!event) return;
+  /** @type {Array} */
+  var dateArray = event.startDate.split('-');
+  /** @type {Date} */
+  var startDate = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
+  if(!this.parsedEvents[startDate]) {
+    this.parsedEvents[startDate] = [];
+  }
+  if(event.startDate === event.endDate) {
+    this.parsedEvents[startDate].push(event);
+  } else {
+    this.parseMultiDayEvent(event, startDate, true);
+  }
+};
+
+
+
+glue.ng.calendar.eventService.module.service(
+  glue.ng.calendar.eventService.SERVICE_NAME,
+  glue.ng.calendar.eventService);
